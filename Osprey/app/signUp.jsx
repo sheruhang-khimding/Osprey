@@ -1,164 +1,194 @@
-import { Alert, Pressable, StyleSheet, Text, View, TextInput } from 'react-native'
-import React, { useRef, useState } from 'react'
-import ScreenWrapper from '../components/ScreenWrapper'
-import Home from '../assets/icons/Home'
-import { theme } from '../constants/theme'
-import { StatusBar } from 'expo-status-bar'
-import { hp } from '../helpers/common'
-import Input from '../components/input'
-import { useRouter } from 'expo-router'
-import { ActivityIndicator } from 'react-native'
-import { wp } from '../helpers/common'
-import Button from '../components/Button'
-import loading from '../components/Loading'
-import Icon from '../assets/icons'
-import BackButton from '../components/BackButton'
-
+import React, { useState, useRef } from "react";
+import { Alert, Pressable, StyleSheet, Text, View, ScrollView } from "react-native";
+import ScreenWrapper from "../components/ScreenWrapper";
+import { theme } from "../constants/theme";
+import { StatusBar } from "expo-status-bar";
+import { hp, wp } from "../helpers/common";
+import Input from "../components/input"; 
+import { useRouter } from "expo-router";
+import Button from "../components/Button";
+import Icon from "../assets/icons";
+import BackButton from "../components/BackButton";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Calender from "../assets/icons/calender";
 
 const Signup = () => {
-  const router =useRouter();
+  const router = useRouter();
   const emailRef = useRef("");
   const nameRef = useRef("");
+  const lastNameRef = useRef("");
+  const addressRef = useRef("");
+  const phoneRef = useRef("");
   const passwordRef = useRef("");
   const [loading, setLoading] = useState(false);
-  const onSubmit =async()=>{
-    if (!emailRef.current || !passwordRef.current){
-      Alert.alert('login', "please fill all the fields!");
+  const [dob, setDob] = useState(new Date()); // Holds the selected date of birth
+  const [showDatePicker, setShowDatePicker] = useState(false); // Controls visibility of the date picker
+
+  const onSubmit = async () => {
+    if (
+      !emailRef.current ||
+      !passwordRef.current ||
+      !nameRef.current ||
+      !lastNameRef.current ||
+      !addressRef.current ||
+      !phoneRef.current
+    ) {
+      Alert.alert("Sign Up", "Please fill all the fields!");
       return;
     }
-     // Start loading (show the loading spinner)
-  setLoading(true);
 
-  // Simulate an async action (like an API call)
-  setTimeout(() => {
-    // Stop loading once the action is completed
     setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      router.push("/login"); // Redirect to home after successful submission
+    }, 2000); // Simulate a 2-second delay
+  };
 
-    // Navigate to the home screen or show an error based on your logic
-    router.push('/home');
-  }, 2000); // Simulate a delay (2 seconds)
-
-  }
-
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || dob;
+    setShowDatePicker(false);
+    setDob(currentDate);
+  };
 
   return (
     <ScreenWrapper bg="white">
       <StatusBar style="dark" />
-      <View style={styles.container}>
-        {/*back Button*/}
-        <BackButton router={router}/>        
+      <ScrollView style={styles.container}>
+        {/* Back Button */}
+        <BackButton router={router} />
 
-        {/*welcme back*/   }
+        {/* Welcome Text */}
         <View>
-            <Text style={styles.welcomeText}>Get Started!</Text>
+          <Text style={styles.welcomeText}>Get Started!</Text>
         </View>
 
-        {/*login form*/}
+        {/* Signup Form */}
         <View style={styles.form}>
-            <Text style={{fontSize: hp(1.5), color:theme.colors.text}}>
-                Please enter the details to create a new account 
-            </Text>
-            <Input
-                icon={<Icon name="user" size={26} strokeWidth={1.6}/>}
-                placeholder="Enter your First name"
-                onChangeText={value=>nameRef.current = value}
-            />
-            <Input
-                icon={<Icon name="user" size={26} strokeWidth={1.6}/>}
-                placeholder="Enter your Last name"
-                onChangeText={value=>nameRef.current = value}
-            />
-            
-            <Input
-                icon={<Icon name="location" size={26} strokeWidth={1.6}/>}
-                placeholder="Enter your Primary Address"
-                onChangeText={value=>nameRef.current = value}
-            />
-            <Input
-                icon={<Icon name="call" size={26} strokeWidth={1.6}/>}
-                placeholder="Phone number"
-                onChangeText={value=>nameRef.current = value}
-            />
-            <Input
-                icon={<Icon name="mail" size={26} strokeWidth={1.6}/>}
-                placeholder="Enter your Email"
-                onChangeText={value=>emailRef.current = value}
-            />
-            <Input
-                icon={<Icon name="lock" size={26} strokeWidth={1.6}/>}
-                placeholder="Enter your password"
-                secureTextEntry
-                onChangeText={value=>passwordRef.current=value}
-            />
+          <Text style={styles.formText}>Please enter the details to create a new account</Text>
 
-            {/*button*/}
-            <Button titles={'Sign Up'} loading={loading} onPress={onSubmit}/>
+          {/* First Name and Last Name on the same line */}
+          <View style={styles.nameRow}>
+            <Input
+              icon={<Icon name="user" size={26} strokeWidth={1.6} />}
+              placeholder="Enter your First name"
+              onChangeText={(value) => (nameRef.current = value)}
+            />
+            <Input
+              icon={<Icon name="user" size={26} strokeWidth={1.6} />}
+              placeholder="Enter your Last name"
+              onChangeText={(value) => (lastNameRef.current = value)}
+            />
+          </View>
 
-            {/*footer*/}
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>
-               Already have an account !
+          {/* Other input fields */}
+          <Input
+            icon={<Icon name="location" size={26} strokeWidth={1.6} />}
+            placeholder="Enter your Primary Address"
+            onChangeText={(value) => (addressRef.current = value)}
+          />
+
+          {/* Date of Birth Picker */}
+          <Pressable style={styles.datePicker} onPress={() => setShowDatePicker(true)}>
+            <Text style={styles.dateText}>{dob.toDateString()}</Text>
+            <Calender width={26} height={26} />
+          </Pressable>
+
+          {/* DatePicker Modal */}
+          {showDatePicker && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={dob}
+              mode="date"
+              display="default"
+              onChange={handleDateChange}
+            />
+          )}
+
+          <Input
+            icon={<Icon name="mail" size={26} strokeWidth={1.6} />}
+            placeholder="Enter your Email"
+            onChangeText={(value) => (emailRef.current = value)}
+          />
+          <Input
+            icon={<Icon name="lock" size={26} strokeWidth={1.6} />}
+            placeholder="Enter your password"
+            secureTextEntry
+            onChangeText={(value) => (passwordRef.current = value)}
+          />
+
+          {/* Sign Up Button */}
+          <Button titles={"Sign Up"} loading={loading} onPress={onSubmit} />
+
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Already have an account?</Text>
+            <Pressable onPress={() => router.push("/login")}>
+              <Text style={[styles.footerText, { color: theme.colors.primaryDark, fontWeight: theme.fonts.semibold }]}>
+                Sign In
               </Text>
-              <Pressable onPress={()=>router.push('/login')}>
-                <Text style={[styles.footerText,{color:theme.colors.primaryDark,fontWeight:theme.fonts.semibold}]}>
-                  Sign In
-                </Text>
-              </Pressable>
-              <Pressable onPress={()=>router.push('/profile')}>
-                 <Text>profile</Text>
-              </Pressable>
-              <Pressable onPress={()=>router.push('/homePage')}>
-                 <Text>HomePage</Text>
-              </Pressable>
-            </View>
-           
-            
-
+            </Pressable>
+          </View>
         </View>
-
-      </View>
+      </ScrollView>
     </ScreenWrapper>
-  )
-}
-
-export default Signup
+  );
+};
 
 const styles = StyleSheet.create({
- 
-    container:{
-      flex:1,
-      gap:30,
-      paddingHorizontal: wp(2),
-      fontWeight:theme.fonts.bold,
-      color: theme.colors.text
-    },
-    welcomeText:{
-      fontSize: hp(4),
-      fontWeight: theme.fonts.bold,
-      color:theme.colors.text,
-  
-    },
-    form:{
-      gap:25
-    },
-    forgotPassword:{
-      textAlign:'right',
-      fontWeight:theme.fonts.semibold,
-      color: theme.colors.text
-  
-    },
-    footer:{
-      flexDirection:'row',
-      justifyContent:'center',
-      alignItems:'center',
-      gap:5
-    },
-    footerText:{
-      textAlign:'center',
-      color: theme.colors.text,
-      fontSize: hp(1.6)
-  
-    }
-
-
+  container: {
+    flex: 1,
+    gap: 30,
+    paddingHorizontal: wp(5),
+    paddingVertical: hp(4),
+    fontWeight: theme.fonts.bold,
+    color: theme.colors.text,
+  },
+  welcomeText: {
+    fontSize: hp(4),
+    fontWeight: theme.fonts.bold,
+    color: theme.colors.text,
+    textAlign: "center",
+  },
+  formText: {
+    fontSize: hp(1.6),
+    color: theme.colors.text,
+    textAlign: "center",
+    marginBottom: hp(3),
+  },
+  form: {
+    gap: 25,
+  },
+  nameRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: wp(3),
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 5,
+    marginTop: hp(3),
+  },
+  footerText: {
+    textAlign: "center",
+    color: theme.colors.text,
+    fontSize: hp(1.6),
+  },
+  datePicker: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: wp(3),
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    marginTop: hp(2),
+  },
+  dateText: {
+    fontSize: hp(1.6),
+    color: theme.colors.text,
+  },
 })
+
+export default Signup;

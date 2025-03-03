@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View,ActivityIndicator } from 'react-native'
 import React from 'react'
 import { theme } from '../constants/theme'
-import { hp } from '../helpers/common'
+import { hp,wp } from '../helpers/common'
 
 const Button = ({
     buttonStyle,
@@ -21,7 +21,7 @@ const Button = ({
     if (loading){
         return (
             <View style={[styles.button, buttonStyle, {backgroundColor: 'white'}]}>
-                <Loading />
+                <ActivityIndicator size="small" color={theme.colors.primary} />
             </View>
         )
     }

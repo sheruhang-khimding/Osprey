@@ -1,31 +1,34 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // You can change this to any other icon set
-import { theme } from '../constants/theme'; // Assuming you have a theme file
-import { wp, hp } from '../helpers/common'; // Responsive helper
+import { View, Text, StyleSheet, TouchableOpacity,Image} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome'; 
+import { theme } from '../constants/theme'; 
+import { wp, hp } from '../helpers/common'; 
 import { useRouter } from 'expo-router';
 import { Pressable } from 'react-native';
+import { LocalRouteParamsContext } from 'expo-router/build/Route';
 
 const Header = () => {
     const router =useRouter();
   return (
     <View style={styles.container}>
       {/* Osprey Text */}
+      <TouchableOpacity onPress={()=> router.push('/about')}>
       <Text style={styles.ospreyText}>Osprey</Text>
+      </TouchableOpacity>
 
       {/* Icons & Search Section */}
       <View style={styles.iconContainer}>
-        <TouchableOpacity style={styles.icon} >
-          <Icon name="search" size={hp(3)} color={theme.colors.primaryDark} />
-        </TouchableOpacity>
         <Pressable style={styles.icon} onPress={()=> router.push('/homePage')}>
           <Icon name="home" size={hp(3)} color={theme.colors.primaryDark} />
         </Pressable>
-        <TouchableOpacity style={styles.icon}>
+        <Pressable style={styles.icon} onPress={()=>router.push('/event')}>
           <Icon name="calendar" size={hp(3)} color={theme.colors.primaryDark} />
-        </TouchableOpacity>
+        </Pressable>
         <Pressable style={styles.icon} onPress={() => router.push('/profile')}>
-          <Icon name="user" size={hp(3)} color={theme.colors.primaryDark} />
+          <Image
+            source={require('../assets/images/profile.jpeg')} // Replace with your profile image URL
+            style={styles.profileImage}
+          />
         </Pressable>
       </View>
     </View>
@@ -58,6 +61,13 @@ const styles = StyleSheet.create({
   icon: {
     padding: hp(1),
   },
-});
+  profileImage: {
+    width: hp(7), 
+    height: hp(7), 
+    borderRadius: hp(9), 
+    borderWidth: 1,
+    borderColor: theme.colors.primaryDark, 
+  },
+})
 
 export default Header;

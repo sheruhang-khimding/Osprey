@@ -14,61 +14,71 @@ import Header from '../components/Header';
 const userProfile = {
   name: 'Marie Doe',
   bio: 'A passionate developer who loves coding and coffee. Exploring new technologies every day!',
-  profilePicture: '', // Replace with an actual image URL or a local asset
+  profilePicture: '../assets/images/profile.jpeg',
   email: 'mariedoe@example.com',
   phone: '+1 234 567 890',
   location: 'San Francisco, CA',
 };
 
 const ProfileScreen = () => {
-    const router = useRouter()
+    const router = useRouter();
+
+    const handleLogout = () => {
+        // Clear user session, token, or authentication state here
+        // For example: AsyncStorage.clear() or any other logic for logging out
+
+        // After logout, navigate back to the login screen or home
+        router.push('/login');
+    }
+
   return (
     <ScreenWrapper>
-    {/*Back button*/}
-          
-          <Header router={router}/>
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Profile Picture */}
-      <View style={styles.profilePictureContainer}>
-        <Image source={require('../assets/images/homeImage.jpg')} style={styles.profilePicture} />
-      </View>
+      {/*Back button*/}
+      <BackButton router={router}/>
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Profile Picture */}
+        <View style={styles.profilePictureContainer}>
+          <Image source={require('../assets/images/profile.jpeg')} style={styles.profilePicture} />
+        </View>
 
-      {/* User Name */}
-      <Text style={styles.name}>{userProfile.name}</Text>
+        {/* User Name */}
+        <Text style={styles.name}>{userProfile.name}</Text>
 
-      {/* Bio */}
-      <Text style={styles.bio}>{userProfile.bio}</Text>
+        {/* Bio */}
+        <Text style={styles.bio}>{userProfile.bio}</Text>
 
-      {/* Profile Details */}
-      <View style={styles.detailsContainer}>
-        <Text style={styles.detailTitle}>Email:</Text>
-        <Text style={styles.detailText}>{userProfile.email}</Text>
+        {/* Profile Details */}
+        <View style={styles.detailsContainer}>
+          <Text style={styles.detailTitle}>Email:</Text>
+          <Text style={styles.detailText}>{userProfile.email}</Text>
 
-        <Text style={styles.detailTitle}>Phone:</Text>
-        <Text style={styles.detailText}>{userProfile.phone}</Text>
+          <Text style={styles.detailTitle}>Phone:</Text>
+          <Text style={styles.detailText}>{userProfile.phone}</Text>
 
-        <Text style={styles.detailTitle}>Location:</Text>
-        <Text style={styles.detailText}>{userProfile.location}</Text>
-      </View>
+          <Text style={styles.detailTitle}>Location:</Text>
+          <Text style={styles.detailText}>{userProfile.location}</Text>
+        </View>
 
-      {/* Edit Button */}
-      <Button titles={'Edit Profile'} onPress={() => alert('Edit profile')}>
-      </Button>
-    </ScrollView>
+        {/* Edit Button */}
+        <Button titles={'Edit Profile'} onPress={() => alert('Edit profile')} />
+
+        {/* Logout Button */}
+        <Button titles={'Logout'} onPress={handleLogout} buttonStyle={styles.logoutButton} />
+      </ScrollView>
     </ScreenWrapper>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
-    gap:30,
+    flex: 1,
+    gap: 30,
     paddingHorizontal: wp(2), 
-    fontWeight:theme.fonts.bold,
-    color: theme.colors.text
+    fontWeight: theme.fonts.bold,
+    color: theme.colors.text,
   },
   profilePictureContainer: {
-    marginTop:wp(7),
+    marginTop: wp(7),
     alignItems: 'center',
     marginBottom: 20,
   },
@@ -83,7 +93,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 3,
   },
   bio: {
     fontSize: 16,
@@ -93,7 +103,7 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     marginBottom: 30,
-    alignItems:'center'
+    alignItems: 'center',
   },
   detailTitle: {
     fontSize: 16,
@@ -103,9 +113,12 @@ const styles = StyleSheet.create({
   detailText: {
     fontSize: 14,
     color: '#333',
-    marginBottom: 10,
+    marginBottom: 3,
   },
-  
+  logoutButton: {
+    backgroundColor: 'gold', 
+    marginTop: 1,
+  },
 });
 
 export default ProfileScreen;
